@@ -84,7 +84,7 @@ fn perform_query() {
         let node: String = node.to_string();
         binding.push(node);
     }
-    let result: String = binding.join("\n");
+    let result: String = binding.join("");
 
     println!("{}", result);
 }
