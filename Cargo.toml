@@ -1,10 +1,16 @@
 [package]
 name = "shuddle"
+authors = ["Notarin Steele"]
 version = "0.0.0"
+description = "A command line utility for interacting with the KDL document language."
+repository = "https://github.com/Notarin/shuddle"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "4.4.13"
-kdl = "4.6.0"
+clap = { version = "4.4.13", features = ["derive"] }
+kdl = "5.0.0-alpha.1"
+miette = { version = "5.10.0", features = ["fancy"] }
+atty = "0.2.14"
+lazy_static = "1.4.0"
