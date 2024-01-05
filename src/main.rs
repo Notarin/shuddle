@@ -3,7 +3,7 @@ mod exit_codes;
 use std::io;
 use std::io::{Read};
 use clap::Parser;
-use kdl::{KdlDocument, KdlError, KdlNode};
+use kdl::{KdlDocument, KdlError, KdlQueryIterator};
 use lazy_static::lazy_static;
 use crate::exit_codes::exit;
 
@@ -66,23 +66,25 @@ fn perform_query() {
 
     // --query should never be None, as this function is conditional on it
     let query: &String = &ARGS.query.clone().expect("This shouldn't happen!");
-    let results: Result<Option<&KdlNode>, KdlError> = kdl_document.query(query);
+    let results: Result<KdlQueryIterator, KdlError> = kdl_document.query_all(query);
 
-    let result: miette::Result<Option<&KdlNode>, miette::Report> = match results {
+    let result:  Result<KdlQueryIterator, miette::Report> = match results {
         Ok(results) => Ok(results),
         Err(error) => Err(error.into()),
     };
-    let result: Option<&KdlNode> = match result {
-        Ok(result) => {result}
+    let result: KdlQueryIterator = match result {
+        Ok(result) => result,
         Err(error) => {
             eprintln!("{:?}", error);
             exit(2);
         }
     };
-    let result: String = match result {
-        Some(result) => result.to_string(),
-        None => String::new(),
-    };
+    let mut binding: Vec<String> = Vec::new();
+    for node in result {
+        let node: String = node.to_string();
+        binding.push(node);
+    }
+    let result: String = binding.join("\n");
 
     println!("{}", result);
 }
